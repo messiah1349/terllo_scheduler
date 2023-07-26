@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  task_scheduler:
+    build: ./bot_task_scheduler/
+    container_name: task_scheduler_container
+    ports: 
+      - "5001:5000"
+    environment:
+      SCHEDULER_TELEGRAM_TOKEN: "$SCHEDULER_TELEGRAM_TOKEN"
+      CHAT_ID: "$CHAT_ID"
+  
+  trello_getter:
+    depends_on: 
+      - task_scheduler
+    build: ./trello_api/
+    environment:
+      TASK_SCHEDULER_HOST: "http://task_scheduler"
+      TASK_SCHEDULER_PORT: "5000"
+      TRELLO_API: "$TRELLO_API"
+      TRELLO_TOKEN: "$TRELLO_TOKEN"
